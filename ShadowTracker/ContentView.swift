@@ -6,16 +6,41 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct ContentView: View {
+    @State private var selectedZoneId: UUID?
+    @State private var selectedZone: DropZone?
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+            Map(selection: $selectedZoneId){
+                ForEach(DropZone.dummyData){location in
+                    Marker(location.codeName,coordinate: location.coordinate)
+                        .tag(location.id)
+                    
+                }
+            }
+            .onChange(of: selectedZoneId) { _, newValue in
+               selectedZone = DropZone.dummyData.first(where: { $0.id == newValue })
+            }
+            .sheet(item: $selectedZone){zone in
+                VStack(alignment: .leading,spacing: 12){
+                    Text(zone.codeName)
+                        .font(.title)
+                        .bold(true)
+                    Text(zone.intel)
+                        .font(.body)
+                        .foregroundStyle(Color.secondary)
+                }
+                .padding()
+                .presentationDetents([.medium, .fraction(0.25)])
+            }
+            
+            
+            
+            
+        
+        
     }
 }
 
