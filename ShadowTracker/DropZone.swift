@@ -7,12 +7,24 @@
 
 import Foundation
 import MapKit
+import SwiftData
 
-struct DropZone: Identifiable {
+@Model
+class DropZone {
     var id = UUID()
     var codeName: String
     var intel: String
-    var coordinate: CLLocationCoordinate2D
+    var latitude: Double
+    var longitude: Double
+    var coordinate: CLLocationCoordinate2D{
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)}
+    
+    init( codeName: String, intel: String, coordinate: CLLocationCoordinate2D) {
+        self.codeName = codeName
+        self.intel = intel
+        self.latitude = coordinate.latitude
+        self.longitude = coordinate.longitude
+            }
 }
 
 extension DropZone {
