@@ -12,7 +12,6 @@ import SwiftData
 struct ContentView: View {
     @State private var selectedZoneId: UUID?
     @State private var selectedZone: DropZone?
-    @State private var showList: Bool = false
     @Query() var drops: [DropZone]
     @Environment(\.modelContext) var context
     
@@ -32,22 +31,23 @@ struct ContentView: View {
             selectedZone = DropZone.dummyData.first(where: { $0.id == newValue })
         }
         .sheet(item: $selectedZone) { zone in
-            VStack(alignment: .leading, spacing: 12) {
-                Text(zone.codeName)
-                    .font(.title)
-                    .bold(true)
-                Text(zone.intel)
-                    .font(.body)
-                    .foregroundStyle(Color.secondary)
-                Button("Go to list") {
-                    showList = true
+            
+            NavigationStack {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(zone.codeName)
+                        .font(.title)
+                        .bold(true)
+                    Text(zone.intel)
+                        .font(.body)
+                        .foregroundStyle(Color.secondary)
+                    NavigationLink("Go to", destination: SecondView())
                 }
+                .presentationDetents([.medium, .fraction(0.50)])
             }
-            .presentationDetents([.medium, .fraction(0.25)])
         }
-        .sheet(isPresented: $showList) {
-            SecondView()
-        }
+//        .sheet(isPresented: $showList) {
+//            SecondView()
+//        }
         .onAppear {
             guard drops.isEmpty else { return }
             for zone in DropZone.dummyData {
